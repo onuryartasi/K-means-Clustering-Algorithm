@@ -1,32 +1,38 @@
-n=200;
-X=round(1+127*rand(2,n));
-cluster=7;
-C=round(1+127*rand(2,cluster));
-colorspec = {'k','b','r','g','y',[.5 .6 .7],[.8 .2 .6]}; %kümelere renk atama
-Dist=zeros(cluster,n);
-Clusters=zeros(cluster,n);
-oldC=zeros(2,cluster);
-Centroid=zeros(1,cluster);
+X=y';
+n=size(X,2);
+disp(n);
+%X=round(1+127*rand(2,n));
+K=4;
+randInd=randperm(n,K);
+C_means=X(:,randperm(n,K));
+disp(C_means);
+
+colorspec = {'k','b','r','g','y',[.5 .6 .7],[.8 .2 .6]}; %definition color
+Dist=zeros(K,n);
+oldC=zeros(2,K);
+cont=1;
+maxIter=20;
+t=0;
 
 
- 
-%Distance calculation
-for i=1:n
-    for j=1:cluster
-        Dist(j,i)=sqrt((C(1,j)-X(1,i)).^2+(C(2,j)-X(2,i)).^2);
-    end
-end
-
+while(cont)
+    t=t+1;
+    Clusters=zeros(K,n);
+    Centroid=zeros(1,K);
 %Clustering and set element counts by distance
+figure(t);
 for i=1:n
-    min=0;
-   for j=1:cluster
-       if (min==0)
-           min=Dist(j,i);
+     for j=1:K
+        Dist(j,i)=sqrt((C_means(1,j)-X(1,i)).^2+(C_means(2,j)-X(2,i)).^2);
+    end
+    minim=0;
+   for j=1:K
+       if (minim==0)
+           minim=Dist(j,i);
            position=j;
        end
-       if(Dist(j,i)<min)
-           min=Dist(j,i);
+       if(Dist(j,i)<minim)
+           minim=Dist(j,i);
            position=j;
            
        end
@@ -34,44 +40,44 @@ for i=1:n
    end 
       Clusters(position,i)=1;
       Centroid(position)=Centroid(position)+1;
+     
         hold on
       plot(X(1,i),X(2,i),'Color',colorspec{position},'marker','*');
     
 end
 
 %Back-up of centroids
-for j=1:cluster
-  oldC(1,j)=C(1,j);
-  oldC(2,j)=C(2,j);
-    
+for j=1:K
+  oldC(:,j)=C_means(:,j);
 end
 %Printing Centroid
-
-hold on
-h1=plot(C(1:cluster-1:2*cluster),C(2:cluster-1:2*cluster),'yx');
-
-C=zeros(2,cluster);
+C_means=zeros(2,K);
 
 %New centroid calculation
-for j=1:cluster
+for j=1:K
     for i=1:n
        if(Clusters(j,i)==1)
-           C(1,j)=C(1,j)+X(1,i)/Centroid(j);
-           C(2,j)=C(2,j)+X(2,i)/Centroid(j);
+           C_means(1,j)=C_means(1,j)+X(1,i)/Centroid(j);
+           C_means(2,j)=C_means(2,j)+X(2,i)/Centroid(j);
        elseif (Centroid(j)==0) %If there are no elements in the cluster, the old centroid
-           C(1,j)=oldC(1,j);
-           C(2,j)=oldC(2,j);
+           C_means(1,j)=oldC(1,j);
+           C_means(2,j)=oldC(2,j);
        end
-      
     end
-    
 end
+%Centroid center control
+ for i=1:K;
+    
+   if((C_means(:,i)~=oldC(:,i)))
+       
+       break;
+   end
+   cont=0;
+ end
 
+end
 hold on
-set(h1,'Visible','off')
-h2 = plot(C(1:2:2*cluster),C(2:2:2*cluster),'ko');
-
-
-disp(C)
+h2 = plot(C_means(1:2:2*K),C_means(2:2:2*K),'ko');
+disp(C_means)
 
 
