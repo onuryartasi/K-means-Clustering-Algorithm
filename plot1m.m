@@ -13,8 +13,6 @@ oldC=zeros(2,K);
 cont=1;
 maxIter=20;
 t=0;
-
-
 while(cont)
     t=t+1;
     Clusters=zeros(K,n);
@@ -57,24 +55,16 @@ C_means=zeros(2,K);
 for j=1:K
     for i=1:n
        if(Clusters(j,i)==1)
-           C_means(1,j)=C_means(1,j)+X(1,i)/Centroid(j);
-           C_means(2,j)=C_means(2,j)+X(2,i)/Centroid(j);
+           C_means(:,j)=C_means(:,j)+X(:,i)/Centroid(j);
+           
        elseif (Centroid(j)==0) %If there are no elements in the cluster, the old centroid
-           C_means(1,j)=oldC(1,j);
-           C_means(2,j)=oldC(2,j);
+           C_means(:,j)=oldC(:,j);
+           
        end
     end
 end
 %Centroid center control
- for i=1:K;
-    
-   if((C_means(:,i)~=oldC(:,i)))
-       
-       break;
-   end
-   cont=0;
- end
-
+cont= (C_means~=oldC) & t<maxIter;     
 end
 hold on
 h2 = plot(C_means(1:2:2*K),C_means(2:2:2*K),'ko');

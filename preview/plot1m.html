@@ -1,0 +1,241 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plot1m</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-05-02"><meta name="DC.source" content="plot1m.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">X=y';
+n=size(X,2);
+disp(n);
+<span class="comment">%X=round(1+127*rand(2,n));</span>
+K=4;
+randInd=randperm(n,K);
+C_means=X(:,randperm(n,K));
+disp(C_means);
+
+colorspec = {<span class="string">'k'</span>,<span class="string">'b'</span>,<span class="string">'r'</span>,<span class="string">'g'</span>,<span class="string">'y'</span>,[.5 .6 .7],[.8 .2 .6]}; <span class="comment">%defination color</span>
+Dist=zeros(K,n);
+oldC=zeros(2,K);
+cont=1;
+maxIter=20;
+t=0;
+
+<span class="keyword">while</span>(cont)
+    t=t+1;
+    Clusters=zeros(K,n);
+    Centroid=zeros(1,K);
+<span class="comment">%Clustering and set element counts by distance</span>
+figure(t);
+<span class="keyword">for</span> i=1:n
+     <span class="keyword">for</span> j=1:K
+        Dist(j,i)=sqrt((C_means(1,j)-X(1,i)).^2+(C_means(2,j)-X(2,i)).^2);
+    <span class="keyword">end</span>
+    minim=0;
+   <span class="keyword">for</span> j=1:K
+       <span class="keyword">if</span> (minim==0)
+           minim=Dist(j,i);
+           position=j;
+       <span class="keyword">end</span>
+       <span class="keyword">if</span>(Dist(j,i)&lt;minim)
+           minim=Dist(j,i);
+           position=j;
+
+       <span class="keyword">end</span>
+
+   <span class="keyword">end</span>
+      Clusters(position,i)=1;
+      Centroid(position)=Centroid(position)+1;
+
+        hold <span class="string">on</span>
+      plot(X(1,i),X(2,i),<span class="string">'Color'</span>,colorspec{position},<span class="string">'marker'</span>,<span class="string">'*'</span>);
+
+<span class="keyword">end</span>
+
+<span class="comment">%Back-up of centroids</span>
+<span class="keyword">for</span> j=1:K
+  oldC(:,j)=C_means(:,j);
+<span class="keyword">end</span>
+<span class="comment">%Printing Centroid</span>
+C_means=zeros(2,K);
+
+<span class="comment">%New centroid calculation</span>
+<span class="keyword">for</span> j=1:K
+    <span class="keyword">for</span> i=1:n
+       <span class="keyword">if</span>(Clusters(j,i)==1)
+           C_means(1,j)=C_means(1,j)+X(1,i)/Centroid(j);
+           C_means(2,j)=C_means(2,j)+X(2,i)/Centroid(j);
+       <span class="keyword">elseif</span> (Centroid(j)==0) <span class="comment">%If there are no elements in the cluster, the old centroid</span>
+           C_means(1,j)=oldC(1,j);
+           C_means(2,j)=oldC(2,j);
+       <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+ <span class="keyword">for</span> i=1:K;
+
+   <span class="keyword">if</span>((C_means(:,i)~=oldC(:,i)))
+
+       <span class="keyword">break</span>;
+   <span class="keyword">end</span>
+   cont=0;
+ <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+hold <span class="string">on</span>
+h2 = plot(C_means(1:2:2*K),C_means(2:2:2*K),<span class="string">'ko'</span>);
+disp(C_means)
+</pre><pre class="codeoutput">        1000
+
+   -0.2571   -0.2339    2.2070    2.0220
+    0.0760   -0.1879    0.3809   -0.6824
+
+    0.0261   -2.0222   -0.0266    1.9576
+    3.0006    0.0662    0.0147   -0.0112
+
+</pre><img vspace="5" hspace="5" src="plot1m_01.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="plot1m_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="plot1m_03.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="plot1m_04.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="plot1m_05.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="plot1m_06.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="plot1m_07.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="plot1m_08.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+X=y';
+n=size(X,2);
+disp(n);
+%X=round(1+127*rand(2,n));
+K=4;
+randInd=randperm(n,K);
+C_means=X(:,randperm(n,K));
+disp(C_means);
+
+colorspec = {'k','b','r','g','y',[.5 .6 .7],[.8 .2 .6]}; %defination color
+Dist=zeros(K,n);
+oldC=zeros(2,K);
+cont=1;
+maxIter=20;
+t=0;
+
+while(cont)
+    t=t+1;
+    Clusters=zeros(K,n);
+    Centroid=zeros(1,K);
+%Clustering and set element counts by distance
+figure(t);
+for i=1:n
+     for j=1:K
+        Dist(j,i)=sqrt((C_means(1,j)-X(1,i)).^2+(C_means(2,j)-X(2,i)).^2);
+    end
+    minim=0;
+   for j=1:K
+       if (minim==0)
+           minim=Dist(j,i);
+           position=j;
+       end
+       if(Dist(j,i)<minim)
+           minim=Dist(j,i);
+           position=j;
+           
+       end
+   
+   end 
+      Clusters(position,i)=1;
+      Centroid(position)=Centroid(position)+1;
+     
+        hold on
+      plot(X(1,i),X(2,i),'Color',colorspec{position},'marker','*');
+    
+end
+
+%Back-up of centroids
+for j=1:K
+  oldC(:,j)=C_means(:,j);
+end
+%Printing Centroid
+C_means=zeros(2,K);
+
+%New centroid calculation
+for j=1:K
+    for i=1:n
+       if(Clusters(j,i)==1)
+           C_means(1,j)=C_means(1,j)+X(1,i)/Centroid(j);
+           C_means(2,j)=C_means(2,j)+X(2,i)/Centroid(j);
+       elseif (Centroid(j)==0) %If there are no elements in the cluster, the old centroid
+           C_means(1,j)=oldC(1,j);
+           C_means(2,j)=oldC(2,j);
+       end
+    end
+end
+ for i=1:K;
+    
+   if((C_means(:,i)~=oldC(:,i)))
+       
+       break;
+   end
+   cont=0;
+ end
+
+end
+hold on
+h2 = plot(C_means(1:2:2*K),C_means(2:2:2*K),'ko');
+disp(C_means)
+
+
+
+##### SOURCE END #####
+--></body></html>
